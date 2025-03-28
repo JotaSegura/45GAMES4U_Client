@@ -84,26 +84,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClienteTCP.cs" />
-    <Compile Include="Presentacion\frmPrincipalCliente.cs">
+    <Compile Include="ClienteForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Presentacion\frmPrincipalCliente.Designer.cs">
-      <DependentUpon>frmPrincipalCliente.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Presentacion\frmValidacionCliente.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Presentacion\frmValidacionCliente.Designer.cs">
-      <DependentUpon>frmValidacionCliente.cs</DependentUpon>
+    <Compile Include="ClienteForm.Designer.cs">
+      <DependentUpon>ClienteForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Presentacion\frmPrincipalCliente.resx">
-      <DependentUpon>frmPrincipalCliente.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Presentacion\frmValidacionCliente.resx">
-      <DependentUpon>frmValidacionCliente.cs</DependentUpon>
+    <EmbeddedResource Include="ClienteForm.resx">
+      <DependentUpon>ClienteForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
