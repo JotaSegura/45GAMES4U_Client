@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _45GAMES4U_Client;
+using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
@@ -30,14 +31,32 @@ namespace ClienteTCP
 
             if (clienteExiste)
             {
-                lblNombre.Visible = true;
-                lblNombreValor.Visible = true;
-                lblApellido1.Visible = true;
-                lblApellido1Valor.Visible = true;
-                lblApellido2.Visible = true;
-                lblApellido2Valor.Visible = true;
-                btnReservar.Visible = true;
-                btnConsultar.Visible = true;
+                // Llamar nuevamente para obtener los datos del cliente
+                string respuesta = ObtenerDatosCliente();
+
+                if (!string.IsNullOrEmpty(respuesta) && respuesta.StartsWith("CLIENTE_EXISTE"))
+                {
+                    // Extraer los datos del cliente (nombre, apellido1, apellido2)
+                    string[] datosCliente = respuesta.Split('|');
+                    string nombre = datosCliente[1];
+                    string apellido1 = datosCliente[2];
+                    string apellido2 = datosCliente[3];
+
+                    // Mostrar los datos en los controles del formulario
+                    lblNombreValor.Text = nombre;
+                    lblApellido1Valor.Text = apellido1;
+                    lblApellido2Valor.Text = apellido2;
+
+                    // Hacer visibles los campos
+                    lblNombre.Visible = true;
+                    lblNombreValor.Visible = true;
+                    lblApellido1.Visible = true;
+                    lblApellido1Valor.Visible = true;
+                    lblApellido2.Visible = true;
+                    lblApellido2Valor.Visible = true;
+                    btnReservar.Visible = true;
+                    btnConsultar.Visible = true;
+                }
             }
             else
             {
@@ -60,8 +79,36 @@ namespace ClienteTCP
                     // Leer respuesta del servidor
                     string respuesta = reader.ReadLine();
 
-                    // Verificar si la respuesta indica que el cliente existe
-                    return respuesta != null && respuesta.Equals("CLIENTE_EXISTE", StringComparison.OrdinalIgnoreCase);
+                    if (respuesta.StartsWith("CLIENTE_EXISTE"))
+                    {
+                        // Extraer los datos del cliente
+                        string[] partes = respuesta.Split('|');
+                        string nombre = partes[1];
+                        string apellido1 = partes[2];
+                        string apellido2 = partes[3];
+
+                        // Llenar los campos del formulario
+                        lblNombreValor.Text = nombre;
+                        lblApellido1Valor.Text = apellido1;
+                        lblApellido2Valor.Text = apellido2;
+
+                        // Mostrar los campos y botones
+                        lblNombre.Visible = true;
+                        lblNombreValor.Visible = true;
+                        lblApellido1.Visible = true;
+                        lblApellido1Valor.Visible = true;
+                        lblApellido2.Visible = true;
+                        lblApellido2Valor.Visible = true;
+                        btnReservar.Visible = true;
+                        btnConsultar.Visible = true;
+
+                        return true;
+                    }
+                    else
+                    {
+                        // El cliente no existe
+                        return false;
+                    }
                 }
             }
             catch (Exception ex)
@@ -69,6 +116,38 @@ namespace ClienteTCP
                 MessageBox.Show("Error al conectar con el servidor: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
+        }
+
+        private string ObtenerDatosCliente()
+        {
+            try
+            {
+                using (TcpClient cliente = new TcpClient(IP_SERVIDOR, PUERTO_SERVIDOR))
+                using (NetworkStream stream = cliente.GetStream())
+                using (StreamWriter writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true })
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                {
+                    // Enviar solicitud para obtener los datos del cliente
+                    writer.WriteLine("OBTENER_DATOS_CLIENTE");
+
+                    // Leer respuesta del servidor con los datos del cliente
+                    return reader.ReadLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al obtener los datos del cliente: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
+        }
+
+        private void btnReservar_Click(object sender, EventArgs e)
+        {
+            string identificacion = txtIdentificacion.Text;
+
+            // Abre el formulario de reserva, pasando la identificación del cliente
+            ReservaForm reservaForm = new ReservaForm(long.Parse(identificacion));
+            reservaForm.ShowDialog();
         }
     }
 }

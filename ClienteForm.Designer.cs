@@ -113,6 +113,7 @@
             this.btnReservar.TabIndex = 9;
             this.btnReservar.Text = "Reservar Videojuego";
             this.btnReservar.Visible = false;
+            this.btnReservar.Click += new System.EventHandler(this.btnReservar_Click);
             // 
             // btnConsultar
             // 
